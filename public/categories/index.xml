@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Categories on Tokumei&#39;s Blog</title>
+    <link>https://blog.tokumei.lu/categories/</link>
+    <description>Recent content in Categories on Tokumei&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <managingEditor>webapp@tokumei.lu (Tokumei)</managingEditor>
+    <webMaster>webapp@tokumei.lu (Tokumei)</webMaster>
+    <copyright>Tokumei.lu (CC BY 4.0)</copyright>
+    <atom:link href="https://blog.tokumei.lu/categories/index.xml" rel="self" type="application/rss+xml" />
+  </channel>
+</rss>

