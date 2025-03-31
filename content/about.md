@@ -21,7 +21,9 @@ I recently completed my master’s thesis, which focuses on establishing a stand
 
 ## Employment
 
-I am currently employed as a Cybersecurity Consultant at a company based in Brussels. As part of the application security team, I am responsible for ensuring the security of our clients' applications. Additionally, I am actively pursuing the CRTO certification. Looking ahead, I aspire to transition into a role as a red teamer and/or security analyst. With a broad knowledge of the cybersecurity field, I am always eager to expand my expertise.
+I was employed as a Cybersecurity Consultant at a company based in Brussels. As part of their application security team, I was responsible for ensuring the security of our clients’ applications. Additionally, I am still actively pursuing the CRTO certification. Looking ahead, I aspire to transition into a role as a red teamer and/or security analyst. With a broad knowledge of the cybersecurity field, I am always eager to expand my expertise.
+
+As of today, I am working as a Security Engineer for the defense sector in Luxembourg. Responsibilities are REDACTED due to the nature of work.
 
 ## Values
 
