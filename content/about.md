@@ -6,7 +6,8 @@ weight: 3
 
 # Whoami
 
-My name is Toku, a 27-year-old with a Master's in Cyber Security from Belgium. I also work as a cybersecurity consultant at a firm in Belgium.
+My name is Toku, a 28-year-old and i’m a cybersecurity enthousiast and professional specializing in independent contracting for indepentant people, bug bounty hunting, and security engineering. I have a Master’s degree in Cybersecurity with high honors and work in the defense sector.
+
 
 ## Background
 
